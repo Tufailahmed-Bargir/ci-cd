@@ -21,8 +21,12 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: 18 # Use the Node.js version your project requires
-        cache: 'pnpm'    # Caches pnpm dependencies
+        node-version: 18
+        cache: 'pnpm'
+
+    # Install pnpm
+    - name: Install pnpm
+      run: npm install -g pnpm
 
     # Install dependencies using pnpm
     - name: Install dependencies
@@ -36,4 +40,6 @@ jobs:
     - name: Lint the code
       run: pnpm lint
 
-     
+    # Run tests
+    - name: Run tests
+      run: pnpm test
