@@ -1,45 +1,27 @@
-name: Next.js CI
-
+name: Linting and formatting on PR
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
-      - main
+      - '**'
 
 jobs:
-  build:
+
+  Continuous-Integration:
+
+    name: Performs linting, formatting on the application
     runs-on: ubuntu-latest
-
     steps:
-    # Checkout the code from the repository
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout the Repository
+        uses: actions/checkout@v3
 
-    # Set up Node.js
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 18
-        cache: 'pnpm'
+      - name: Setup pnpm
+        run: npm install -g pnpm
+        
+      - name: Install Dependencies
+        run: pnpm install
 
-    # Install pnpm
-    - name: Install pnpm
-      run: npm install -g pnpm
+      - name: Run linting check
+        run: pnpm run lint:check
 
-    # Install dependencies using pnpm
-    - name: Install dependencies
-      run: pnpm install
-
-    # Build the Next.js project
-    - name: Build the project
-      run: pnpm build
-
-    # Run linting
-    - name: Lint the code
-      run: pnpm lint
-
-    # Run tests
-    - name: Run tests
-      run: pnpm test
+      - name: Check formatting
+        run: pnpm run format:check
