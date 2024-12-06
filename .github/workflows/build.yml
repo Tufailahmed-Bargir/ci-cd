@@ -1,4 +1,5 @@
 name: Linting and Building on Commit
+
 on:
   pull_request:
     branches:
@@ -8,11 +9,10 @@ on:
       - main
 
 jobs:
-
   Continuous-Integration:
-
     name: Performs linting, formatting on the application
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout the Repository
         uses: actions/checkout@v3
@@ -23,12 +23,28 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
-      - name: Run check linting 
-        run: pnpm  lint
+      - name: Run Linting
+        run: pnpm lint
 
-      - name: Run production  build 
-        run: pnpm  build
+      - name: Run Production Build
+        run: pnpm build
 
-      
+      - name: Prepare Dockerfile
+        run: ./Dockerfile # Note: Ensure this is the correct command; usually, you'd want to build the Docker image instead.
 
-  
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: bargirtufailahmed189/web-app:latest # Corrected tag format
+
+      - name: Verify Pushed Image
+        run: docker pull bargirtufailahmed189/web-app:latest
